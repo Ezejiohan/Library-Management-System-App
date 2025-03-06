@@ -2,7 +2,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { fetchUser, createUser, fetchUserById, deleteUser, findUser } = require('../repository/user');
-const { sendEmail } = require('../utiilies/nodemailer');
+const { sendEmail } = require('../utilities/nodemailer');
 
 exports.signUpAdmin = async (req, res) => {
     try {

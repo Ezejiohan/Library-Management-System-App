@@ -2,7 +2,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { fetchUser, fetchUserById } = require('../repository/user');
-const {sendEmail} = require('../utiilies/nodemailer');
+const {sendEmail} = require('../utilities/nodemailer');
 
 
 
