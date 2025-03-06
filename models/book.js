@@ -7,7 +7,7 @@ const bookSchema = new mongoose.Schema({
     },
     author_id: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Author', 
+        ref: 'User', 
         required: true 
     },
     isbn: { 
@@ -22,5 +22,5 @@ const bookSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-const Book = mongoose.model('Book', bookSchema);
+const Book = mongoose.model('books', bookSchema);
 module.exports = Book;
