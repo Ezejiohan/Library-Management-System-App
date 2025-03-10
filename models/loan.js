@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const loanSchema = new mongoose.Schema({
     book_id: { 
         type: mongoose.Schema.Types.ObjectId, 
@@ -24,5 +26,5 @@ const loanSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-const Loan = mongoose.model('Loan', loanSchema);
+const Loan = mongoose.model('loans', loanSchema);
 module.exports = Loan;
