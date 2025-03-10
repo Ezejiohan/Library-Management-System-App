@@ -15,3 +15,7 @@ exports.fetchBookById = (options) => {
 exports.deleteBook = async (options) => {
     return Book.deleteOne(options)
 }
+
+exports.findBook = async (options) => {
+    return Book.find(options)
+}

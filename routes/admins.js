@@ -1,6 +1,17 @@
 const express = require('express');
 
-const { signUpAdmin, login, deleteAdmin, getAllAdmins, adminProfile, getOneAdmin, changeAdminPassword } = require('../controllers/admin');
+const { 
+    signUpAdmin, 
+    login, 
+    deleteAdmin, 
+    getAllAdmins, 
+    adminProfile, 
+    getOneAdmin, 
+    changeAdminPassword,
+    getOneLoanedBook,
+    getLoanedBooks 
+} = require('../controllers/admin');
+
 const { superAdminAuthorization } = require('../middlewares/superAdminAuth');
 const { adminAuthorization } = require('../middlewares/adminAuth');
 
@@ -13,5 +24,7 @@ route.delete('/deleteAdmins/:adminId', superAdminAuthorization, deleteAdmin);
 route.put('/changeAdminPassword', adminAuthorization, changeAdminPassword);
 route.get('/getAllAdmins', superAdminAuthorization, getAllAdmins);
 route.get('/getOneAdmin/:adminId', superAdminAuthorization, getOneAdmin);
+route.get('/loaned-books/:loanId', adminAuthorization, getOneLoanedBook);
+route.get('/loaned-books', adminAuthorization, getLoanedBooks);
 
 module.exports = route;

@@ -1,8 +1,8 @@
-const { fetchBook, createBook, fetchBookById, deleteBook } = require('../repository/book');
+const { fetchBook, createBook, fetchBookById, deleteBook, findBook } = require('../repository/book');
 
 exports.createBook = async (req, res) => {
     try {
-        const { title, author_id, isbn, status } = req.body;
+        const { title, author, isbn, status } = req.body;
 
         const existingBook = await fetchBook({ isbn });
         if (existingBook) {
@@ -11,7 +11,7 @@ exports.createBook = async (req, res) => {
 
         const book = await createBook({
             title,
-            author_id,
+            author,
             isbn,
             status
         });
@@ -43,3 +43,33 @@ exports.deleteBooks = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.getAllBooks = async (req, res) => {
+    try {
+        const books = await findBook();
+
+        if (!books) {
+            return res.status(404).json({ message: "No books found" });
+        }
+
+        res.status(200).json({ message: "Books retrieved successfully", numberOfBooks: books.length, books });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.getOneBook = async (req, res) => {
+    try {
+        const { title, author } = req.body;
+        const book = await fetchBook({ 
+            $or: [{ title: title }, { author: author }]
+        });
+        if (!book) {
+            return res.status(404).json({ message: "Book not found" });
+        }
+        res.status(200).json(book);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+

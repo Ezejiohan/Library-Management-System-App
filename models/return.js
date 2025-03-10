@@ -12,5 +12,5 @@ const returnSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-const Return = mongoose.model('Return', returnSchema);
+const Return = mongoose.model('returns', returnSchema);
 module.exports = Return;
