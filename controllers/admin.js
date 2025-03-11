@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { fetchUser, createUser, fetchUserById, deleteUser, findUser } = require('../repository/user');
 const { sendEmail } = require('../utilities/nodemailer');
+//const { fetchLoanById, findLoan } = require('../repository/loan');
 
 exports.signUpAdmin = async (req, res) => {
     try {
@@ -39,13 +40,13 @@ exports.login = async (req, res) => {
     const user = await fetchUser({ email });
 
     if (!user) {
-        return res.status(404).json({ error: "User not found" });
+        return res.status(404).json({ message: "User not found" });
     }
 
     const checkMatch = await bcrypt.compare(password, user.password);
 
     if (!checkMatch) {
-        return res.status(400).json({ error: "Invalid credentials" });
+        return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const generatedToken = jwt.sign({
@@ -76,7 +77,7 @@ exports.changeAdminPassword = async (req, res) => {
 
         const isMatch = await bcrypt.compare(oldPassword, user.password);
         if (!isMatch) {
-            return res.status(404).json({ error: "Password incorrect" });
+            return res.status(404).json({ message: "Password incorrect" });
         }
 
         if (newPassword === oldPassword) {
@@ -112,7 +113,7 @@ exports.deleteAdmin = async (req, res) => {
 
         const admin = await fetchUserById(adminId);
         if (admin.role !== 'admin') {
-            return res.status(404).json({ error: "Admin not found" });
+            return res.status(404).json({ message: "Admin not found" });
         } else {
             await deleteUser({adminId});
             res.status(200).json({
@@ -131,7 +132,7 @@ exports.adminProfile = async (req, res) => {
         const user = await fetchUserById(userId);
         console.log(user)
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
         res.status(200).json({ user })
     } catch (error) {
@@ -157,10 +158,48 @@ exports.getOneAdmin = async (req, res) => {
 
         const admin = await fetchUserById(adminId);
         if (admin.role !== 'admin') {
-            return res.status(400).json({ error: "Admin not found" });
+            return res.status(400).json({ message: "Admin not found" });
         }
         res.status(200).json({ message: "Admin retrieved successfully", admin });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
+/*exports.getOneLoanedBook = async (req, res) => {
+    try {
+        const { loanId } = req.params;
+
+        // Find the loan by ID
+        const loan = await fetchLoanById(loanId)
+            .populate('book_id', 'title author_id') // Get book title and author
+            .populate('user_id', 'fullname email')  // Get borrower's name and email
+            .exec();
+
+        if (!loan) {
+            return res.status(404).json({ message: "Loan record not found" });
+        }
+
+        res.status(200).json({ message: "Loan record retrieved successfully", loan });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.getLoanedBooks = async (req, res) => {
+    try {
+        // Fetch all loaned books (excluding returned ones)
+        const loanedBooks = await findLoan({ status: { $ne: 'returned' } })
+            .populate('book_id', 'title author_id') // Get book title and author_id
+            .populate('user_id', 'fullname email')  // Get borrower's name and email
+            .exec();
+
+        if (loanedBooks.length === 0) {
+            return res.status(404).json({ message: "No loaned books found" });
+        }
+
+        res.status(200).json({ message: "Loaned books retrieved successfully", loanedBooks });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};*/
