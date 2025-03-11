@@ -8,8 +8,8 @@ const {
     adminProfile, 
     getOneAdmin, 
     changeAdminPassword,
-    getOneLoanedBook,
-    getLoanedBooks 
+    //getOneLoanedBook,
+    //getLoanedBooks 
 } = require('../controllers/admin');
 
 const { superAdminAuthorization } = require('../middlewares/superAdminAuth');
@@ -24,7 +24,7 @@ route.delete('/deleteAdmins/:adminId', superAdminAuthorization, deleteAdmin);
 route.put('/changeAdminPassword', adminAuthorization, changeAdminPassword);
 route.get('/getAllAdmins', superAdminAuthorization, getAllAdmins);
 route.get('/getOneAdmin/:adminId', superAdminAuthorization, getOneAdmin);
-route.get('/loaned-books/:loanId', adminAuthorization, getOneLoanedBook);
-route.get('/loaned-books', adminAuthorization, getLoanedBooks);
+//route.get('/loaned-books/:loanId', adminAuthorization, getOneLoanedBook);
+//route.get('/loaned-books', adminAuthorization, getLoanedBooks);
 
 module.exports = route;

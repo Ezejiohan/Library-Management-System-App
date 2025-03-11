@@ -36,13 +36,13 @@ exports.login = async (req, res) => {
     const user = await fetchUser({ email });
 
     if (!user) {
-        return res.status(404).json({ error: "User not found" });
+        return res.status(404).json({ message: "User not found" });
     }
 
     const checkMatch = await bcrypt.compare(password, user.password);
 
     if (!checkMatch) {
-        return res.status(400).json({ error: "Invalid credentials" });
+        return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const generatedToken = jwt.sign({
@@ -65,7 +65,7 @@ exports.borrowerProfile = async (req, res) => {
 
         const user = await fetchUserById(userId);
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
         res.status(200).json({ user })
     } catch (error) {
@@ -81,12 +81,12 @@ exports.changeBorrowerPassword = async (req, res) => {
 
         const user = await fetchUserById(userId);
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         const isMatch = await bcrypt.compare(oldPassword, user.password);
         if (!isMatch) {
-            return res.status(404).json({ error: "Password incorrect" });
+            return res.status(404).json({ message: "Password incorrect" });
         }
 
         const saltPassword = bcrypt.genSaltSync(10);
@@ -122,7 +122,7 @@ exports.borrowerForgotPassword = async (req, res) => {
         const user = await fetchUser({ email });
         console.log(user)
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         const token = jwt.sign({
@@ -152,7 +152,7 @@ exports.resetBorrowerPassword = async (req, res) => {
         const { newPassword, confirmPassword } = req.body;
         const token = req.headers.authorization?.split(" ")[1];
         if (!token) {
-            return res.status(401).json({ error: "Unauthorized: No token provided" });
+            return res.status(401).json({ message: "Unauthorized: No token provided" });
         }
 
         const decoded = jwt.verify(token, process.env.TOKEN);
@@ -160,7 +160,7 @@ exports.resetBorrowerPassword = async (req, res) => {
 
         const user = await fetchUserById(userId);
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         await jwt.verify(token, process.env.TOKEN)
@@ -191,7 +191,7 @@ exports.getAllBorrowers = async (req, res) => {
         const user = await fetchUserById(userId);
 
         if (user.role !== 'super_admin') {
-            return res.status(403).json({ error: "Access denied: Only super_admin can view all borrowers" });
+            return res.status(403).json({ message: "Access denied: Only super_admin can view all borrowers" });
         }
 
         const allBorrowers = await findUser({ role: 'borrower' });
@@ -208,7 +208,7 @@ exports.adminGetAllBorrowers = async (req, res) => {
         const user = await fetchUserById(userId);
 
         if (user.role !== 'admin') {
-            return res.status(403).json({ error: "Access denied: Only admin can view all borrowers" });
+            return res.status(403).json({ message: "Access denied: Only admin can view all borrowers" });
         }
 
         const allBorrowers = await findUser({ role: 'borrower' });

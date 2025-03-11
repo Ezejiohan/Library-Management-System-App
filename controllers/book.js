@@ -2,21 +2,18 @@ const { fetchBook, createBook, fetchBookById, deleteBook, findBook } = require('
 
 exports.createBook = async (req, res) => {
     try {
-        const { title, author, isbn, status } = req.body;
+        const { title, author, isbn } = req.body;
 
         const existingBook = await fetchBook({ isbn });
         if (existingBook) {
-            return res.status(400).json({ error: "A book with this ISBN already exists" });
+            return res.status(400).json({ message: "A book with this ISBN already exists" });
         }
 
         const book = await createBook({
             title,
             author,
             isbn,
-            status
         });
-
-        await book.save();
 
         res.status(201).json({
             message: "Book created successfully",
@@ -27,13 +24,13 @@ exports.createBook = async (req, res) => {
     }
 };
 
-exports.deleteBooks = async (req, res) => {
+exports.deleteBook = async (req, res) => {
     try {
         const { bookId } = req.params;
 
         const book = await fetchBookById(bookId);
         if (!book) {
-            return res.status(404).json({ error: "Book not found" });
+            return res.status(404).json({ message: "Book not found" });
         }
 
         await deleteBook({bookId});
