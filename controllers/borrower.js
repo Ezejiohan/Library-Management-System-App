@@ -2,7 +2,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { fetchUser, createUser, fetchUserById, updateUser, findUser } = require('../repository/user');
+const { fetchBookById } = require('../repository/book');
 const { sendEmail } = require('../utilities/nodemailer');
+const { fetchLoan, loanCountDocument, createLoan } = require('../repository/loan');
 
 exports.signUp = async (req, res) => {
     try {
@@ -216,5 +218,43 @@ exports.adminGetAllBorrowers = async (req, res) => {
         res.status(200).json({ message: "Borrowers retrieved successfully", numberOfBorrowers: allBorrowers.length, allBorrowers});
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+};
+
+exports.loanBook = async (req, res) => {
+    try {
+        const { book_id, user_id, due_date } = req.body;
+
+        const book = await fetchBookById(book_id);
+        if (!book) {
+            return res.status(404).json({ message: "Book not found" });
+        }
+
+        const user = await fetchUserById(user_id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const existingLoan = await fetchLoan({ book_id, user_id, status: 'active' });
+        if (existingLoan) {
+            return res.status(400).json({ message: "You have already borrowed this book and not returned it." });
+        }
+
+        const activeLoans = await loanCountDocument({ user_id, status: 'active' });
+        if (activeLoans >= 3) {
+            return res.status(400).json({ message: "Loan limit reached. Please return a book before borrowing a new one." });
+        }
+
+        const newLoan = await createLoan({
+            book_id,
+            user_id,
+            due_date
+        });
+
+        res.status(201).json({ message: "Book successfully borrowed", loan: newLoan });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 };
