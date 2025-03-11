@@ -6,7 +6,7 @@ exports.createBook = async (req, res) => {
 
         const existingBook = await fetchBook({ isbn });
         if (existingBook) {
-            return res.status(400).json({ message: "A book with this ISBN already exists" });
+            return res.status(400).json({ message: "A book with this ISBN: ${isbn}  already exists" });
         }
 
         const book = await createBook({
