@@ -1,6 +1,16 @@
 const express = require('express');
 
-const { signUp, login, borrowerProfile, changeBorrowerPassword, borrowerForgotPassword, resetBorrowerPassword, getAllBorrowers, adminGetAllBorrowers} = require('../controllers/borrower');
+const { 
+    signUp, 
+    login, 
+    borrowerProfile, 
+    changeBorrowerPassword, 
+    borrowerForgotPassword, 
+    resetBorrowerPassword, 
+    getAllBorrowers, 
+    adminGetAllBorrowers, 
+    loanBook 
+} = require('../controllers/borrower');
 const { authenticateUser } = require('../middlewares/authentication');
 
 const borrowerRoute = express.Router();
@@ -13,5 +23,6 @@ borrowerRoute.post('/borrowerForgotPassword', borrowerForgotPassword);
 borrowerRoute.patch('/resetBorrowerPassword/:token', resetBorrowerPassword);
 borrowerRoute.get('/getAllBorrowers', authenticateUser, getAllBorrowers);
 borrowerRoute.get('/adminGetAllBorrowers', authenticateUser, adminGetAllBorrowers);
+borrowerRoute.post('/loan', authenticateUser, loanBook);
 
 module.exports = borrowerRoute;
