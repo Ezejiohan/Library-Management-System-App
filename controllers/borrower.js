@@ -223,7 +223,8 @@ exports.adminGetAllBorrowers = async (req, res) => {
 
 exports.loanBook = async (req, res) => {
     try {
-        const { book_id, user_id, due_date } = req.body;
+        const { book_id, due_date } = req.body;
+        const user_id = req.user.userId;
 
         const book = await fetchBookById(book_id);
         if (!book) {
